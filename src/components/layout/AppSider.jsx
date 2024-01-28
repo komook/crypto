@@ -13,6 +13,10 @@ const data = [
     'Man charged over missing wedding girl.',
     'Los Angeles battles huge wildfires.',
   ];
+
+function percentDifference(a,b) {
+  return 100 * Math.abs( ( a - b ) / ( ( a + b )/2 ) );
+}
 export default function AppSider(){
     const [loading, setLoading] = useState(false)
     const [crypto, setCrypto] = useState([])
@@ -24,7 +28,14 @@ export default function AppSider(){
             const {result} = await fakeFetchCrypto()
             const assets = await FetchAssests()
 
-            setAssets(assets)
+            setAssets(assets.map(asset => {
+              const coin = result.find((c) => c.id == asset.id)
+              return{
+                grow: asset.price < coin.price,
+                growPercent: percentDifference(asset.price, coin.price),
+                ...asset,
+              }
+            }))
             setCrypto(result)
             setLoading(false)
         }
@@ -33,6 +44,7 @@ export default function AppSider(){
     if (loading){
         return <Spin fullscreen/>
     }
+    
     return(
     <Layout.Sider width="25%" style={siderStyle}>
     <Card style={{marginBottom: '1rem'}}>
