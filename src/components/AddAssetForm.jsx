@@ -1,10 +1,21 @@
-import { Select, Space, Typography, Flex, Divider, Form, InputNumber, Button } from "antd"
+import { Select, Space, Typography, Flex, Divider, Form, InputNumber, Button, DatePicker  } from "antd"
 import { useState } from "react"
 import { useCrypto } from "../context/crypto-context"
 
 export default function AddAssetForm() {
+    const [form] = Form.useForm()
     const {crypto} = useCrypto()
     const [coin, setCoin] = useState(null)
+
+    const validateMessages = {
+        required: "${label}' is required!",
+        types: {
+            number: '${label} is not valid number'
+        },
+        number: {
+            range: '${label} must be between ${min} and ${max}'
+        }
+      };
     
     if(!coin){
         return(
@@ -32,8 +43,22 @@ export default function AddAssetForm() {
     function onFinish(values){
         console.log(values)
     }
+
+    function handleAmountChange(value){
+        const price = form.getFieldValue('price')
+        form.setFieldsValue({
+            total: +(value * price).toFixed(2)
+        })
+    }
+    function handlePriceChange(value){
+        const amount = form.getFieldValue('amount')
+        form.setFieldsValue({
+            total: +(amount * value).toFixed(2)
+        })
+    }
     return(
         <Form
+                form={form}
                 name="basic"
                 labelCol={{
                 span: 4,
@@ -45,9 +70,10 @@ export default function AddAssetForm() {
                 maxWidth: 600,
                 }}
                 initialValues={{
-
+                    price: +coin.price.toFixed(2),
                 }}
                 onFinish={onFinish}
+                validateMessages={validateMessages}
             >
             
             <Flex align='center'>
@@ -66,18 +92,25 @@ export default function AddAssetForm() {
                     required: true,
                     type: 'number',
                     min: 0,
-                    message: 'Please input your username!',
                     },
                 ]}
                 >
-                <InputNumber />
+                <InputNumber placeholder="Enter coin amount" onChange={handleAmountChange} style={{width: '100%'}}/>
                 </Form.Item>
 
                 <Form.Item
                 label="Price"
                 name="price"
                 >
-                <InputNumber />
+                <InputNumber onChange={handlePriceChange} style={{width: '100%'}}/>
+                </Form.Item>
+
+                <Form.Item label="Date & Time"name="date">
+                    <DatePicker showTime />
+                </Form.Item>
+
+                <Form.Item label="Total"name="total">
+                    <InputNumber disabled style={{width: '100%'}}/>
                 </Form.Item>
 
                 <Form.Item>
