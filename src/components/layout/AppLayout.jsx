@@ -11,6 +11,15 @@ export default function AppLayout() {
     if (loading){
         return <Spin fullscreen/>
     }
+    const num = 4
+    const el = ['12345']
+    let elnew = []
+    function dell(num, el){
+        
+    }
+    
+    console.log(dell(num))
+  
     return(
     <Layout>
         <AppHeader/>

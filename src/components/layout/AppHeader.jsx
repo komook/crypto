@@ -63,6 +63,7 @@ export default function AppHeader() {
       </Space>
     )}
   />
+
   <Button type="primary" onClick={() => setDrawer(true)}>Add asset</Button>
 
   <Modal open={modal} onCancel={() => setModal(false) } footer={null}> 
